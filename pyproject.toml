@@ -6,5 +6,17 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "langchain>=0.3.27",
+    "ruff>=0.13.0",
     "streamlit>=1.49.1",
+]
+
+[tool.ruff]
+line-length = 90
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes errors
+    "B",  # bugbear warnings
+    "I",  # isort (for import organization)
+    "UP", # upgrade rules
+    "RUF", # Ruff-specific rules
 ]
