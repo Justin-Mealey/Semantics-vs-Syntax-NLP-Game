@@ -25,5 +25,5 @@ This project uses [uv](https://github.com/astral-sh/uv), a fast Python package a
 4. **Run the application** (replace with your entry point):
 
    ```bash
-   uv run main.py
+   uv run streamlit run app.py
    ```
