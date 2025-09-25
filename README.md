@@ -22,14 +22,8 @@ This project uses [uv](https://github.com/astral-sh/uv), a fast Python package a
 
    This will install all packages listed in `pyproject.toml` and set up a virtual environment automatically.
 
-4. **Run the application** (replace with your entry point):
+4. **Run the application:**
 
    ```bash
    uv run streamlit run app.py
-   ```
-
-   OR
-
-   ```bash
-   uv run streamlit run main.py
    ```
