@@ -1,3 +1,4 @@
+import math
 import random
 
 import streamlit as st
@@ -71,8 +72,9 @@ with st.container(horizontal_alignment="center"):
         submitted = st.form_submit_button("Submit")
 
         if submitted and response and response.strip():
-            semantic_score = round(compute_semantic_similarity(st.session_state.prompt, response) * 100, 2)
-            syntax_score = round(compute_syntactic_similarity(st.session_state.prompt, response) * 100, 2)
+            prompt = st.session_state.prompt
+            semantic_score = math.trunc(compute_semantic_similarity(prompt, response) * 100)
+            syntax_score = math.trunc(compute_syntactic_similarity(prompt, response) * 100)
 
             status_message = (
                 f"Your semantic score for the last response was {semantic_score}, and your syntax score"

@@ -1,4 +1,27 @@
+import math
 from collections import Counter
+
+
+def curve_syntax_score(score: float) -> float:
+    inverse_score = 1 - score
+    return 1 - math.sqrt(inverse_score)
+
+
+def compute_syntactic_similarity(prompt, response):
+    syntax_algos = [words_check, longest_common_substring_score, levenshtein_distance_score]
+
+    scores = [algo(prompt, response) for algo in syntax_algos]
+
+    raw_score = sum(scores) / len(scores)
+    return curve_syntax_score(raw_score)
+
+
+def longest_common_substring_score(s1, s2) -> float:
+    return float(longest_common_substring(s1, s2)) / min(len(s1), len(s2))
+
+
+def levenshtein_distance_score(s1, s2) -> float:
+    return float(levenshtein_distance(s1, s2)) / max(len(s1), len(s2))
 
 
 def words_check(prompt, response):
@@ -44,9 +67,50 @@ def words_check(prompt, response):
     return float(copied_words) / len(response.split())
 
 
-def compute_syntactic_similarity(prompt, response):
-    syntax_algos = [words_check]
+def longest_common_substring(s1: str, s2: str) -> int:
+    m = len(s1)
+    n = len(s2)
 
-    scores = [algo(prompt, response) for algo in syntax_algos]
+    # Create a 1D array to store the previous row's results
+    prev = [0] * (n + 1)
 
-    return sum(scores) / len(scores)
+    res = 0
+    for i in range(1, m + 1):
+        # Create a temporary array to store the current row
+        curr = [0] * (n + 1)
+        for j in range(1, n + 1):
+            if s1[i - 1] == s2[j - 1]:
+                curr[j] = prev[j - 1] + 1
+                res = max(res, curr[j])
+            else:
+                curr[j] = 0
+
+        # Move the current row's data to the previous row
+        prev = curr
+
+    return res
+
+
+def levenshtein_distance(s1: str, s2: str) -> int:
+    # Create a matrix to store distances
+    rows = len(s1) + 1
+    cols = len(s2) + 1
+    distance_matrix = [[0 for _ in range(cols)] for _ in range(rows)]
+
+    # Initialize the first row and column
+    for i in range(1, rows):
+        distance_matrix[i][0] = i
+    for j in range(1, cols):
+        distance_matrix[0][j] = j
+
+    # Fill the rest of the matrix
+    for col in range(1, cols):
+        for row in range(1, rows):
+            cost = 0 if s1[row - 1] == s2[col - 1] else 1
+            distance_matrix[row][col] = min(
+                distance_matrix[row - 1][col] + 1,  # Deletion
+                distance_matrix[row][col - 1] + 1,  # Insertion
+                distance_matrix[row - 1][col - 1] + cost,  # Substitution
+            )
+
+    return distance_matrix[rows - 1][cols - 1]
