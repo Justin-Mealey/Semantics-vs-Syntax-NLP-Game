@@ -1,5 +1,6 @@
 import math
-from collections import Counter
+
+from constants import ignored_words
 
 
 def curve_syntax_score(score: float) -> float:
@@ -21,7 +22,10 @@ def longest_common_substring_score(s1, s2) -> float:
 
 
 def levenshtein_distance_score(s1, s2) -> float:
-    return float(levenshtein_distance(s1, s2)) / max(len(s1), len(s2))
+    """
+    Higher levenshtein distance is a lower similarity.
+    """
+    return 1 - float(levenshtein_distance(s1, s2)) / max(len(s1), len(s2))
 
 
 def words_check(prompt, response):
@@ -33,36 +37,13 @@ def words_check(prompt, response):
     Returns 3 / 9 = .33 because "went" was copied from the prompt and used twice, and "running" was copied from the prompt
     and used once. So, 3 of the 9 words in the response were copied.
     """
-    word_counts = Counter(response.split())  # word -> # times word was typed
 
-    s1 = set(prompt.split())
-    s2 = set(response.split())
-    words_in_both = s1.intersection(s2)
-
-    ignored_words = set(
-        [  # Don't punish user for copying one of these basic words
-            "the",
-            "of",
-            "and",
-            "to",
-            "in",
-            "a",
-            "that",
-            "for",
-            "on",
-            "with",
-            "as",
-            "at",
-            "by",
-            "from",
-            "or",
-        ]
-    )
+    prompt_words = set(prompt.split())
 
     copied_words = 0
-    for word in words_in_both:
-        if word not in ignored_words:
-            copied_words += word_counts.get(word, 0)
+    for word in response.split():
+        if word in prompt_words and word not in ignored_words:
+            copied_words += 1
 
     return float(copied_words) / len(response.split())
 
