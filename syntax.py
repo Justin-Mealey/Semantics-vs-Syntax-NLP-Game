@@ -14,9 +14,6 @@ def compute_syntactic_similarity(prompt, response):
     prompt = cleanup_sentence(prompt)
     response = cleanup_sentence(response)
 
-    print(prompt)
-    print(response)
-
     scores = [algo(prompt, response) for algo in syntax_algos]
 
     raw_score = sum(scores) / len(scores)
@@ -25,7 +22,6 @@ def compute_syntactic_similarity(prompt, response):
 
 def longest_common_substring_score(s1, s2) -> float:
     score = float(longest_common_substring(s1, s2)) / min(len(s1), len(s2))
-    print(f"substring score: {score}")
     return score
 
 
@@ -34,7 +30,6 @@ def levenshtein_distance_score(s1, s2) -> float:
     Higher levenshtein distance is a lower similarity.
     """
     score = 1 - float(levenshtein_distance(s1, s2)) / max(len(s1), len(s2))
-    print(f"levenstein score: {score}")
     return score
 
 
@@ -60,7 +55,6 @@ def words_check(prompt, response):
             copied_words += 1
 
     score = float(copied_words) / float(total_words)
-    print(f"words check score: {score}")
     return score
 
 
