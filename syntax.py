@@ -9,7 +9,13 @@ def curve_syntax_score(score: float) -> float:
 
 
 def compute_syntactic_similarity(prompt, response):
-    syntax_algos = [words_check, longest_common_substring_score, levenshtein_distance_score]
+    syntax_algos = [words_check, levenshtein_distance_score]
+
+    prompt = cleanup_sentence(prompt)
+    response = cleanup_sentence(response)
+
+    print(prompt)
+    print(response)
 
     scores = [algo(prompt, response) for algo in syntax_algos]
 
@@ -18,14 +24,18 @@ def compute_syntactic_similarity(prompt, response):
 
 
 def longest_common_substring_score(s1, s2) -> float:
-    return float(longest_common_substring(s1, s2)) / min(len(s1), len(s2))
+    score = float(longest_common_substring(s1, s2)) / min(len(s1), len(s2))
+    print(f"substring score: {score}")
+    return score
 
 
 def levenshtein_distance_score(s1, s2) -> float:
     """
     Higher levenshtein distance is a lower similarity.
     """
-    return 1 - float(levenshtein_distance(s1, s2)) / max(len(s1), len(s2))
+    score = 1 - float(levenshtein_distance(s1, s2)) / max(len(s1), len(s2))
+    print(f"levenstein score: {score}")
+    return score
 
 
 def words_check(prompt, response):
@@ -41,11 +51,17 @@ def words_check(prompt, response):
     prompt_words = set(prompt.split())
 
     copied_words = 0
+    total_words = 0
     for word in response.split():
-        if word in prompt_words and word not in ignored_words:
+        if word in ignored_words:
+            continue
+        total_words += 1
+        if word in prompt_words:
             copied_words += 1
 
-    return float(copied_words) / len(response.split())
+    score = float(copied_words) / float(total_words)
+    print(f"words check score: {score}")
+    return score
 
 
 def longest_common_substring(s1: str, s2: str) -> int:
@@ -95,3 +111,14 @@ def levenshtein_distance(s1: str, s2: str) -> int:
             )
 
     return distance_matrix[rows - 1][cols - 1]
+
+
+def cleanup_sentence(s: str) -> str:
+    # remove punctuation
+    s = s.replace(".", "")
+    s = s.replace("!", "")
+    s = s.replace("?", "")
+
+    # make lower case
+    s = s.lower()
+    return s

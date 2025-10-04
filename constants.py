@@ -7,7 +7,7 @@ prompts = [
     "The chef prepared a delicious meal in the kitchen.",
     "Students quietly studied their books in the library.",
     "The musician practiced his violin until sunset.",
-    "They enjoyed coffee and conversation at the café.",
+    "They enjoyed coffee and conversation at the cafe.",
     # Nature and weather
     "Leaves danced in the autumn breeze yesterday afternoon.",
     "Thunder rolled across dark skies during the storm.",
